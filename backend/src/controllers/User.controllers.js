@@ -64,3 +64,20 @@ export const signin = async (req, res) => {
     res.status(500).json({ message: "Error signing in", error: err.message });
   }
 };
+
+// Logout Controller
+export const signout = (req, res) => {
+  try {
+    // 1. Clear the cookie
+    res.clearCookie("access_token", {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "strict",
+    });
+
+    // 2. Send response
+    res.status(200).json({ message: "signout successful" });
+  } catch (err) {
+    res.status(500).json({ message: "Error signing out", error: err.message });
+  }
+};
