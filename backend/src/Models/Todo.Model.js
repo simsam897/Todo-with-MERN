@@ -1,13 +1,23 @@
-
 import mongoose from "mongoose";
 
-const todoSchema =new  mongoose.Schema(
+const todoSchema = new mongoose.Schema(
   {
-    text: String,
-    complete: { Boolean, default: false },
-    userid: String,
+    title: {
+      type: String,
+      required: true,
+    },
+
+    completed: {
+      type: Boolean,
+      default: false,
+    },
+
+    user: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+    },
   },
-  { timeStamps: true },
+  { timestamps: true },
 );
 
-module.exports = mongoose.Schema("Todo", todoSchema);
+export default mongoose.model("Todo", todoSchema);
