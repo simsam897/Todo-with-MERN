@@ -10,6 +10,14 @@ export const signup = async (req, res) => {
       return res.status(400).json({ message: "Email and password required" });
     }
 
+    const existingUser = await User.findOne({ email });
+
+    if (existingUser) {
+      return res.status(400).json({
+        message: "User already exists",
+      });
+    }
+
     const hashedPassword = await bcrypt.hash(password, 10);
     const user = new User({ email, password: hashedPassword });
     await user.save();
@@ -50,10 +58,10 @@ export const signin = async (req, res) => {
 
     // 5. Send JWT as HTTP-only cookie
     res.cookie("access_token", token, {
-      httpOnly: true, // cannot be accessed via JS
+      httpOnly: true,
       secure: process.env.NODE_ENV === "production", // only HTTPS in prod
-      sameSite: "strict", // prevents CSRF
-      maxAge: 60 * 60 * 1000, // 1 hour
+      sameSite: "strict",
+      maxAge: 60 * 60 * 1000,
     });
 
     res.status(200).json({

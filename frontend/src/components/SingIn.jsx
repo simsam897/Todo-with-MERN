@@ -1,6 +1,42 @@
 import React from 'react'
+import { useState } from 'react'
+import { Link, useNavigate } from 'react-router-dom'
+
+import { useAuth } from '../Context/AuthContext'
+
+
 
 const SingIn = () => {
+  const navigate = useNavigate()
+
+
+  const { signin } = useAuth();
+  const [formData, setFormData] = useState({ email: "", password: "", })
+
+  const handleChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value,
+    })
+  }
+
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    try {
+      const res = await signin(formData);
+
+      // console.log(res.data);
+
+
+      navigate("/todo");
+    } catch (error) {
+      console.log(error);
+
+
+    };
+  }
   return (
     <>
       <div className="flex min-h-full flex-col justify-center px-6 py-12 lg:px-8">
@@ -10,9 +46,9 @@ const SingIn = () => {
         </div>
 
         <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm border-2 border-black p-6 rounded-lg">
-          <form action="#" method="POST" className="space-y-6">
+          <form onSubmit={handleSubmit} method="POST" className="space-y-6">
             <div>
-              <label htmlFor="email" className="block text-sm/6 font-medium text-gray-100">
+              <label htmlFor="email" className="block text-sm/6 font-medium text-gray-400">
                 Email address
               </label>
               <div className="mt-2">
@@ -20,17 +56,19 @@ const SingIn = () => {
                   id="email"
                   name="email"
                   type="email"
+                  value={formData.email}
+                  onChange={handleChange}
                   required
                   placeholder='Enter your email'
                   autoComplete="email"
-                  className="block w-full rounded-md bg-white/5 px-3 py-1.5 text-base text-white outline-1 -outline-offset-1 outline-white/10 placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-500 sm:text-sm/6 border-2 border-black"
+                  className="block w-full rounded-md bg-white/5 px-3 py-1.5 text-base text-black outline-1 -outline-offset-1 outline-white/10 placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-500 sm:text-sm/6 border-2 border-black"
                 />
               </div>
             </div>
 
             <div>
               <div className="flex items-center justify-between">
-                <label htmlFor="password" className="block text-sm/6 font-medium text-gray-100">
+                <label htmlFor="password" className="block text-sm/6 font-medium text-gray-00">
                   Password
                 </label>
 
@@ -40,10 +78,12 @@ const SingIn = () => {
                   id="password"
                   name="password"
                   type="password"
+                  value={formData.password}
+                  onChange={handleChange}
                   placeholder='Enter your password'
                   required
                   autoComplete="current-password"
-                  className="block w-full rounded-md bg-white/5 px-3 py-1.5 text-base text-white outline-1 -outline-offset-1 outline-white/10 placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-500 sm:text-sm/6 border-2 border-black"
+                  className="block w-full rounded-md bg-white/5 px-3 py-1.5 text-base text-black outline-1 -outline-offset-1 outline-white/10 placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-500 sm:text-sm/6 border-2 border-black"
                 />
               </div>
 
@@ -61,9 +101,9 @@ const SingIn = () => {
 
           <p className="mt-10 text-center text-sm/6 text-gray-400">
             Have  not account ?  {' '}
-            <a href="signup" className="font-semibold text-indigo-400 hover:text-indigo-300">
+            <Link to='/' className="font-semibold text-indigo-400 hover:text-indigo-300">
               Sign Up
-            </a>
+            </Link>
           </p>
         </div>
       </div>

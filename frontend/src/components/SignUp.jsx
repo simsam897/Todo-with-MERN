@@ -1,6 +1,44 @@
 import React from 'react'
+import { useContext } from 'react';
+import { useState } from 'react';
+
+import { Link, useNavigate } from 'react-router-dom'
+import { AuthContext } from '../Context/AuthContext';
 
 const SignUp = () => {
+  const navigate = useNavigate();
+
+  const { signup } = useContext(AuthContext);
+
+  const [formData, setFormData] = useState({
+    email: "",
+    password: "",
+  });
+
+
+  const handleChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value,
+    });
+  };
+
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    try {
+      const res = await signup(formData);
+
+      alert(res.data.message);
+
+      navigate("/signin");
+
+    } catch (error) {
+      alert(error.response?.data?.message || "Signup failed");
+      console.log(error);
+    }
+  };
 
   return (
     <>
@@ -11,7 +49,7 @@ const SignUp = () => {
         </div>
 
         <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm border-2 border-black p-6 rounded-lg">
-          <form action="#" method="POST" className="space-y-6">
+          <form onSubmit={handleSubmit} method="POST" className="space-y-6">
             <div>
               <label htmlFor="email" className="block text-sm/6 font-medium text-gray-500">
                 Email address
@@ -21,10 +59,12 @@ const SignUp = () => {
                   id="email"
                   name="email"
                   type="email"
+                  value={formData.email}
+                  onChange={handleChange}
                   required
                   placeholder='Enter your email'
                   autoComplete="email"
-                  className="block w-full rounded-md bg-white/5 px-3 py-1.5 text-base text-white outline-1 -outline-offset-1 outline-white/10 placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-500 sm:text-sm/6 border-2 border-black"
+                  className="block w-full rounded-md bg-white/5 px-3 py-1.5 text-base text-black outline-1 -outline-offset-1 outline-white/10 placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-500 sm:text-sm/6 border-2 border-black"
                 />
               </div>
             </div>
@@ -41,10 +81,12 @@ const SignUp = () => {
                   id="password"
                   name="password"
                   type="password"
+                  value={formData.password}
+                  onChange={handleChange}
                   placeholder='Enter your password'
                   required
                   autoComplete="current-password"
-                  className="block w-full rounded-md bg-white/5 px-3 py-1.5 text-base text-white outline-1 -outline-offset-1 outline-white/10 placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-500 sm:text-sm/6 border-2 border-black"
+                  className="block w-full rounded-md bg-white/5 px-3 py-1.5 text-base text-black outline-1 -outline-offset-1 outline-white/10 placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-500 sm:text-sm/6 border-2 border-black"
                 />
               </div>
 
@@ -62,9 +104,9 @@ const SignUp = () => {
 
           <p className="mt-10 text-center text-sm/6 text-gray-400">
             Already have account ?  {' '}
-            <a href="/signin" className="font-semibold text-indigo-400 hover:text-indigo-300">
+            <Link to="/signin" className="font-semibold text-indigo-400 hover:text-indigo-300">
               Sing In
-            </a>
+            </Link>
           </p>
         </div>
       </div>
