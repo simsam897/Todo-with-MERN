@@ -7,8 +7,14 @@ import cookieParser from "cookie-parser";
 import { DB_NAME } from "./constants.js";
 import UserRoutes from "../src/Routes/User.routes.js";
 import TodoRoutes from "./Routes/Todo.routes.js";
-
+import { v2 as cloudinary } from "cloudinary";
 dotenv.config({ path: "./.env" });
+
+cloudinary.config({
+  cloud_name: process.env.CLOUD_NAME,
+  api_key: process.env.CLOUD_API_KEY,
+  api_secret: process.env.CLOUD_API_SECRET,
+});
 
 const app = express();
 app.use(express.json());
@@ -33,5 +39,6 @@ app.get("/api/test", (req, res) => {
 });
 
 app.use("/api/User", UserRoutes);
+app.use("/api/todos", TodoRoutes);
 
 app.listen(port, () => console.log(`Server running at ${port}`));
