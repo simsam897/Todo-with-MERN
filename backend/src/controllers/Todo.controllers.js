@@ -4,9 +4,6 @@ import User from "../Models/User.Model.js";
 // add todo controller
 export const addTodo = async (req, res) => {
   try {
-    console.log("Body:", req.body);
-    console.log("User:", req.user);
-
     const { title } = req.body;
 
     const todo = await Todo.create({
@@ -19,7 +16,7 @@ export const addTodo = async (req, res) => {
       todo,
     });
   } catch (err) {
-    console.error(err);
+ 
 
     return res.status(500).json({
       success: false,
@@ -28,20 +25,29 @@ export const addTodo = async (req, res) => {
   }
 };
 
-//  fetch todo controller
-// export const fetchTodos = async (req, res) => {
-//   try {
-//     const todos = await Todo.find({
-//       user: req.user.id,
-//     });
+export const fetchTodayTodos = async (req, res) => {
+  try {
+    const start = new Date();
+    start.setHours(0, 0, 0, 0);
 
-//     res.status(200).json(todos);
-//   } catch (error) {
-//     res.status(500).json({
-//       message: error.message,
-//     });
-//   }
-// };
+    const end = new Date();
+    end.setHours(23, 59, 59, 999);
+
+    const todos = await Todo.find({
+      user: req.user.id,
+      createdAt: {
+        $gte: start,
+        $lte: end,
+      },
+    }).sort({ createdAt: -1 });
+
+    res.status(200).json(todos);
+  } catch (error) {
+    res.status(500).json({
+      message: error.message,
+    });
+  }
+};
 
 export const fetchTodos = async (req, res) => {
   try {

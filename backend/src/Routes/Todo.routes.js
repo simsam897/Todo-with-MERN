@@ -7,9 +7,10 @@ import {
   toggleTodo,
   getTodoDates,
   getTodosByDate,
+  fetchTodayTodos,
 } from "../controllers/Todo.controllers.js";
 
-import { verifyToken } from "../Middlewares/Auth.middewares.js";
+import { verifyToken } from "../Middlewares/Auth.middleware.js";
 
 const router = express.Router();
 
@@ -24,5 +25,6 @@ router.get("/", verifyToken, fetchTodos);
 router.put("/:id", verifyToken, updateTodo);
 router.patch("/:id/toggle", verifyToken, toggleTodo);
 router.delete("/:id", verifyToken, deleteTodo);
+router.get("/todaystodos", verifyToken, fetchTodayTodos);
 
 export default router;
