@@ -105,6 +105,11 @@ const TodoProvider = ({ children }) => {
   };
 
 
+  const fetchTodayTodos = async () => {
+    const res = await fetchTodayTodosService();
+    setTodos(res.data);
+  };
+
 
 
 
@@ -116,11 +121,12 @@ const TodoProvider = ({ children }) => {
         todos,
         addTodo,
         deleteTodo,
-        fetchTodos,
+        fetchTodayTodos,
         updateTodo,
         toggleTodoComplete,
         getTodoDates,
         getTodosByDate,
+        fetchTodos,
         dates,
         historyTodos
 
