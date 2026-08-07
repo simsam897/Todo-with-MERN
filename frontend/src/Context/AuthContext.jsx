@@ -2,7 +2,8 @@ import { createContext, useState, useEffect } from "react";
 import {
   signupUser,
   signinUser,
-  signoutUser
+  signoutUser,
+  updateProfile
 } from "../services/authService";
 import { useContext } from "react";
 
@@ -13,7 +14,7 @@ const AuthProvider = ({ children }) => {
 
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true)
-
+  const [updating, setUpdating] = useState(false);
 
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
@@ -26,9 +27,37 @@ const AuthProvider = ({ children }) => {
   }, []);
 
 
+  // const updateUserProfile = async (data) => {
+  //   const res = await updateProfile(data);
 
+  //   setUser(res.data.user);
 
+  //   localStorage.setItem(
+  //     "user",
+  //     JSON.stringify(res.data.user)
+  //   );
 
+  //   return res;
+  // };
+
+  const updateUserProfile = async (formData) => {
+    try {
+      setUpdating(true);
+
+      const res = await updateProfile(formData);
+
+      setUser(res.data.user);
+
+      localStorage.setItem(
+        "user",
+        JSON.stringify(res.data.user)
+      );
+
+      return res;
+    } finally {
+      setUpdating(false);
+    }
+  };
 
 
   // Signup
@@ -44,11 +73,9 @@ const AuthProvider = ({ children }) => {
     const res = await signinUser(data);
 
 
-    console.log(res.data
+    console.log(res.data.user);
 
-    );
-
-    setUser(res.data.user);
+    setUser(res.data.user)
 
     localStorage.setItem(
       "user",
@@ -71,6 +98,9 @@ const AuthProvider = ({ children }) => {
     localStorage.removeItem("user");
   };
 
+
+
+
   return (
 
     <AuthContext.Provider
@@ -79,7 +109,10 @@ const AuthProvider = ({ children }) => {
         signup,
         signin,
         loading,
-        signout
+        signout,
+        updating,
+        updateUserProfile
+
       }}
     >
 

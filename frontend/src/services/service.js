@@ -19,3 +19,4 @@ export default API;
 export const fetchTodoDates = () => API.get("/todos/history");
 
 export const fetchTodosByDate = (date) => API.get(`/todos/history/${date}`);
+export const fetchTodayTodosService = () => API.get(`/todos/today`);

@@ -9,6 +9,6 @@ export const signupUser = (data) => API.post("/signup", data);
 
 export const signinUser = (data) => API.post("/signin", data);
 
-
-
 export const signoutUser = () => API.post("/signout");
+
+export const updateProfile = (formData) => API.put("/update-profile", formData);
