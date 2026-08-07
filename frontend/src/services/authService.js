@@ -1,14 +1,10 @@
-import axios from "axios";
+import API from "./service";
 
-const API = axios.create({
-  baseURL: "http://localhost:5000/api/User",
-  withCredentials: true,
-});
+export const signupUser = (data) => API.post("/user/signup", data);
 
-export const signupUser = (data) => API.post("/signup", data);
+export const signinUser = (data) => API.post("/user/signin", data);
 
-export const signinUser = (data) => API.post("/signin", data);
+export const signoutUser = () => API.post("user/signout");
 
-export const signoutUser = () => API.post("/signout");
-
-export const updateProfile = (formData) => API.put("/update-profile", formData);
+export const updateProfile = (formData) =>
+  API.put("user/update-profile", formData);
