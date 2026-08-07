@@ -67,7 +67,11 @@ export const signin = async (req, res) => {
 
     res.status(200).json({
       message: "Signin successful",
-      user: { id: user._id, email: user.email ,   profilePicture: user.profilePicture, },
+      user: {
+        id: user._id,
+        email: user.email,
+        profilePicture: user.profilePicture,
+      },
     });
   } catch (err) {
     res.status(500).json({ message: "Error signing in", error: err.message });
@@ -80,8 +84,8 @@ export const signout = (req, res) => {
     // 1. Clear the cookie
     res.clearCookie("access_token", {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "strict",
+      secure: true,
+      sameSite: "none",
     });
 
     // 2. Send response
@@ -91,97 +95,97 @@ export const signout = (req, res) => {
   }
 };
 
-// export const updateUser = async (req, res) => {
-//   try {
-//     console.log("req.body:", req.body);
-//     console.log("req.file:", req.file);
-//     const { email, password } = req.body;
+export const updateUser = async (req, res) => {
+  try {
+    console.log("req.body:", req.body);
+    console.log("req.file:", req.file);
+    const { email, password } = req.body;
 
-//     const user = await User.findById(req.user.id);
+    const user = await User.findById(req.user.id);
 
-//     if (!user) {
-//       return res.status(404).json({
-//         message: "User not found",
-//       });
-//     }
+    if (!user) {
+      return res.status(404).json({
+        message: "User not found",
+      });
+    }
 
-//     // Update email
-//     if (email && email !== user.email) {
-//       const existingUser = await User.findOne({ email });
+    // Update email
+    if (email && email !== user.email) {
+      const existingUser = await User.findOne({ email });
 
-//       if (existingUser) {
-//         return res.status(400).json({
-//           message: "Email already exists",
-//         });
-//       }
+      if (existingUser) {
+        return res.status(400).json({
+          message: "Email already exists",
+        });
+      }
 
-//       user.email = email;
-//     }
+      user.email = email;
+    }
 
-//     // Update password
-//     if (password && password.trim() !== "") {
-//       const hashedPassword = await bcrypt.hash(password, 10);
-//       user.password = hashedPassword;
-//     }
+    // Update password
+    if (password && password.trim() !== "") {
+      const hashedPassword = await bcrypt.hash(password, 10);
+      user.password = hashedPassword;
+    }
 
-//     // Upload profile picture
-//     if (req.file) {
-//       const result = await cloudinary.uploader.upload(req.file.path, {
-//         folder: "profile_pictures",
-//       });
+    // Upload profile picture
+    if (req.file) {
+      const result = await cloudinary.uploader.upload(req.file.path, {
+        folder: "profile_pictures",
+      });
 
-//       user.profilePicture = result.secure_url;
-//     }
+      user.profilePicture = result.secure_url;
+    }
 
-//     await user.save();
+    await user.save();
 
-//     res.status(200).json({
-//       message: "Profile updated successfully",
-//       user: {
-//         _id: user._id,
-//         email: user.email,
-//         profilePicture: user.profilePicture,
-//       },
-//     });
-//   } catch (error) {
-//     res.status(500).json({
-//       message: error.message,
-//     });
-//   }
-// };
+    res.status(200).json({
+      message: "Profile updated successfully",
+      user: {
+        _id: user._id,
+        email: user.email,
+        profilePicture: user.profilePicture,
+      },
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: error.message,
+    });
+  }
+};
 
-// export const uploadProfilePicture = async (req, res) => {
-//   try {
-//     if (!req.file) {
-//       return res.status(400).json({
-//         message: "Please select an image",
-//       });
-//     }
+export const uploadProfilePicture = async (req, res) => {
+  try {
+    if (!req.file) {
+      return res.status(400).json({
+        message: "Please select an image",
+      });
+    }
 
-//     const result = await cloudinary.uploader.upload(req.file.path, {
-//       folder: "profile_pictures",
-//     });
+    const result = await cloudinary.uploader.upload(req.file.path, {
+      folder: "profile_pictures",
+    });
 
-//     const updatedUser = await User.findByIdAndUpdate(
-//       req.user.id,
-//       {
-//         profilePicture: result.secure_url,
-//       },
-//       {
-//         new: true,
-//       },
-//     ).select("-password");
+    const updatedUser = await User.findByIdAndUpdate(
+      req.user.id,
+      {
+        profilePicture: result.secure_url,
+      },
+      {
+        new: true,
+      },
+    ).select("-password");
 
-//     res.status(200).json({
-//       message: "Profile picture uploaded",
-//       user: updatedUser,
-//     });
-//   } catch (error) {
-//     res.status(500).json({
-//       message: error.message,
-//     });
-//   }
-// };
+    res.status(200).json({
+      message: "Profile picture uploaded",
+      user: updatedUser,
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: error.message,
+    });
+  }
+};
 
 export const updateProfile = async (req, res) => {
   try {
