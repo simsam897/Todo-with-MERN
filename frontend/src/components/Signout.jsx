@@ -15,7 +15,7 @@ const Signout = () => {
     signout()
 
 
-    navigate("/sigin")
+    navigate("/signin")
 
   }
   return (
