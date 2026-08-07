@@ -14,13 +14,6 @@ const router = express.Router();
 router.post("/signup", signup);
 router.post("/signin", signin);
 router.post("/signout", signout);
-// router.put("/profile", verifyToken, updateUser);
-// router.put(
-//   "/profile",
-//   verifyToken,
-//   upload.single("profilePicture"),
-//   updateUser,
-// );
 
 router.put(
   "/update-profile",
