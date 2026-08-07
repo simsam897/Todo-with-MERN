@@ -19,9 +19,10 @@ cloudinary.config({
 const app = express();
 app.use(express.json());
 app.use(cookieParser());
+const allowOrigin = process.env.FRONTEND_URL;
 app.use(
   cors({
-    origin: "http://localhost:5173",
+    origin: allowOrigin,
     credentials: true,
   }),
 );
@@ -38,7 +39,7 @@ app.get("/api/test", (req, res) => {
   res.json({ message: "Backend is working!" });
 });
 
-app.use("/api/User", UserRoutes);
+app.use("/api/user", UserRoutes);
 app.use("/api/todos", TodoRoutes);
 
 app.listen(port, () => console.log(`Server running at ${port}`));
