@@ -54,16 +54,16 @@ export const signin = async (req, res) => {
 
     // 4. Create JWT
     const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
-      expiresIn: "1h",
+      expiresIn: "24h",
     });
 
     // 5. Send JWT as HTTP-only cookie
     res.cookie("access_token", token, {
-  httpOnly: true,
-  secure: true,
-  sameSite: "none",
-  maxAge: 24 * 60 * 60 * 1000,
-});
+      httpOnly: true,
+      secure: true,
+      sameSite: "none",
+      maxAge: 24 * 60 * 60 * 1000,
+    });
 
     res.status(200).json({
       message: "Signin successful",
@@ -97,8 +97,6 @@ export const signout = (req, res) => {
 
 export const updateUser = async (req, res) => {
   try {
-    console.log("req.body:", req.body);
-    console.log("req.file:", req.file);
     const { email, password } = req.body;
 
     const user = await User.findById(req.user.id);
