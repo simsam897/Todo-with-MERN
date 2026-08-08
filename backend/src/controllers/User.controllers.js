@@ -8,7 +8,9 @@ export const signup = async (req, res) => {
     const { email, password } = req.body;
 
     if (!email || !password) {
-      return res.status(400).json({ message: "Email and password required" });
+      return res.status(400).json({
+        message: "Email and password required",
+      });
     }
 
     const existingUser = await User.findOne({ email });
@@ -20,14 +22,47 @@ export const signup = async (req, res) => {
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
-    const user = new User({ email, password: hashedPassword });
+
+    const user = new User({
+      email,
+      password: hashedPassword,
+    });
+
     await user.save();
 
-    res.status(201).json({ message: "User created successfully" });
+    // Create JWT
+    const token = jwt.sign(
+      {
+        id: user._id,
+      },
+      process.env.JWT_SECRET,
+      {
+        expiresIn: "24h",
+      },
+    );
+
+    // Create authentication cookie
+    res.cookie("access_token", token, {
+      httpOnly: true,
+      secure: true,
+      sameSite: "none",
+      path: "/",
+      maxAge: 24 * 60 * 60 * 1000,
+    });
+
+    return res.status(201).json({
+      message: "User created successfully",
+      user: {
+        id: user._id,
+        email: user.email,
+        profilePicture: user.profilePicture,
+      },
+    });
   } catch (err) {
-    res
-      .status(500)
-      .json({ message: "Error creating user", error: err.message });
+    return res.status(500).json({
+      message: "Error creating user",
+      error: err.message,
+    });
   }
 };
 
@@ -35,37 +70,47 @@ export const signin = async (req, res) => {
   try {
     const { email, password } = req.body;
 
-    // 1. Validate input
     if (!email || !password) {
-      return res.status(400).json({ message: "Email and password required" });
+      return res.status(400).json({
+        message: "Email and password required",
+      });
     }
 
-    // 2. Find user
     const user = await User.findOne({ email });
+
     if (!user) {
-      return res.status(404).json({ message: "User not found" });
+      return res.status(404).json({
+        message: "User not found",
+      });
     }
 
-    // 3. Compare password
     const isMatch = await bcrypt.compare(password, user.password);
+
     if (!isMatch) {
-      return res.status(401).json({ message: "Invalid password" });
+      return res.status(401).json({
+        message: "Invalid password",
+      });
     }
 
-    // 4. Create JWT
-    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
-      expiresIn: "24h",
-    });
+    const token = jwt.sign(
+      {
+        id: user._id,
+      },
+      process.env.JWT_SECRET,
+      {
+        expiresIn: "24h",
+      },
+    );
 
-    // 5. Send JWT as HTTP-only cookie
     res.cookie("access_token", token, {
       httpOnly: true,
       secure: true,
       sameSite: "none",
+      path: "/",
       maxAge: 24 * 60 * 60 * 1000,
     });
 
-    res.status(200).json({
+    return res.status(200).json({
       message: "Signin successful",
       user: {
         id: user._id,
@@ -74,7 +119,10 @@ export const signin = async (req, res) => {
       },
     });
   } catch (err) {
-    res.status(500).json({ message: "Error signing in", error: err.message });
+    return res.status(500).json({
+      message: "Error signing in",
+      error: err.message,
+    });
   }
 };
 
