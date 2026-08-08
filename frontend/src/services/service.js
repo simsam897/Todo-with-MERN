@@ -14,9 +14,11 @@ export const deleteTodo = (todoId) => API.delete(`/todos/${todoId}`);
 export const updateTodo = (todoId, data) => API.put(`/todos/${todoId}`, data);
 
 export const toggleComplete = (todoId) => API.patch(`/todos/${todoId}/toggle`);
-export default API;
 
 export const fetchTodoDates = () => API.get("/todos/history");
 
 export const fetchTodosByDate = (date) => API.get(`/todos/history/${date}`);
-export const fetchTodayTodosService = () => API.get(`/todos/today`);
+
+export const fetchTodayTodosService = () => API.get("/todos/todaystodos");
+
+export default API;

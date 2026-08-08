@@ -1,4 +1,5 @@
 import express from "express";
+
 import {
   addTodo,
   deleteTodo,
@@ -14,17 +15,26 @@ import { verifyToken } from "../Middlewares/Auth.middleware.js";
 
 const router = express.Router();
 
+// Create
 router.post("/", verifyToken, addTodo);
 
-// History routes FIRST
+// History
 router.get("/history", verifyToken, getTodoDates);
 router.get("/history/:date", verifyToken, getTodosByDate);
 
-// General routes AFTER
-router.get("/", verifyToken, fetchTodos);
-router.put("/:id", verifyToken, updateTodo);
-router.patch("/:id/toggle", verifyToken, toggleTodo);
-router.delete("/:id", verifyToken, deleteTodo);
+// Today's todos
 router.get("/todaystodos", verifyToken, fetchTodayTodos);
+
+// All todos
+router.get("/", verifyToken, fetchTodos);
+
+// Update
+router.put("/:id", verifyToken, updateTodo);
+
+// Toggle
+router.patch("/:id/toggle", verifyToken, toggleTodo);
+
+// Delete
+router.delete("/:id", verifyToken, deleteTodo);
 
 export default router;
