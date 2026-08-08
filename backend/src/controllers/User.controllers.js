@@ -59,11 +59,11 @@ export const signin = async (req, res) => {
 
     // 5. Send JWT as HTTP-only cookie
     res.cookie("access_token", token, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production", // only HTTPS in prod
-      sameSite: "strict",
-      maxAge: 60 * 60 * 1000,
-    });
+  httpOnly: true,
+  secure: true,
+  sameSite: "none",
+  maxAge: 24 * 60 * 60 * 1000,
+});
 
     res.status(200).json({
       message: "Signin successful",
