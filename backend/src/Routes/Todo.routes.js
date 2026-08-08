@@ -16,10 +16,11 @@ import { verifyToken } from "../Middlewares/Auth.middleware.js";
 const router = express.Router();
 
 // Create
-router.post("/", verifyToken, addTodo);
+router.post("/addtodo", verifyToken, addTodo);
 
 // History
 router.get("/history", verifyToken, getTodoDates);
+
 router.get("/history/:date", verifyToken, getTodosByDate);
 
 // Today's todos

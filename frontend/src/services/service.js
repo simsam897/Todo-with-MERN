@@ -5,7 +5,7 @@ const API = axios.create({
   withCredentials: true,
 });
 
-export const createTodo = (todoData) => API.post("/todos", todoData);
+export const createTodo = (todoData) => API.post("/todos/addtodo", todoData);
 
 export const fetchTodos = () => API.get("/todos");
 
