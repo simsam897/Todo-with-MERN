@@ -1,14 +1,3 @@
-// import multer from "multer";
-// import cloudinary from "../utils/cloudinary.js";
-
-// const storage = multer.diskStorage({});
-
-// const upload = multer({
-//   storage,
-// });
-
-// export default upload;
-
 import multer from "multer";
 import path from "path";
 
