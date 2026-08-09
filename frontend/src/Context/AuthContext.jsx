@@ -69,21 +69,26 @@ const AuthProvider = ({ children }) => {
   };
 
   // Signin
-  const signin = async (data) => {
-    const res = await signinUser(data);
+const signin = async (data) => {
+  const res = await signinUser(data);
 
+  console.log("Signin response:", res.data);
 
-    console.log(res.data.user);
+  const { token, user } = res.data;
 
-    setUser(res.data.user)
+  // Save JWT token
+  localStorage.setItem("token", token);
 
-    localStorage.setItem(
-      "user",
-      JSON.stringify(res.data.user)
-    );
+  // Save user
+  setUser(user);
 
-    return res;
-  };
+  localStorage.setItem(
+    "user",
+    JSON.stringify(user)
+  );
+
+  return res;
+};
 
 
 
