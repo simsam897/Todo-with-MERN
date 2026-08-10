@@ -5,6 +5,7 @@ import {
   signin,
   signout,
   updateProfile,
+  getCurrentUser,
 } from "../controllers/User.controllers.js";
 
 import { verifyToken } from "../Middlewares/Auth.middleware.js";
@@ -25,4 +26,5 @@ router.put(
   updateProfile,
 );
 
+router.get("/me", verifyToken , getCurrentUser)
 export default router;

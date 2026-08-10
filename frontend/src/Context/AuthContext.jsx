@@ -1,44 +1,106 @@
-import { createContext, useState, useEffect } from "react";
+import {
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
+
 import {
   signupUser,
   signinUser,
   signoutUser,
-  updateProfile
+  updateProfile,
+  getCurrentUser,
 } from "../services/authService";
-import { useContext } from "react";
-
 
 export const AuthContext = createContext();
 
 const AuthProvider = ({ children }) => {
-
   const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true)
+  const [loading, setLoading] = useState(true);
   const [updating, setUpdating] = useState(false);
 
+  // =========================
+  // CHECK CURRENT USER
+  // =========================
+
   useEffect(() => {
-    const storedUser = localStorage.getItem("user");
+    const checkAuth = async () => {
+      try {
+        const res = await getCurrentUser();
 
-    if (storedUser) {
-      setUser(JSON.parse(storedUser));
-    }
+        console.log("Current user:", res.data);
 
-    setLoading(false)
+        setUser(res.data.user);
+      } catch (error) {
+        console.log("User is not authenticated");
+
+        setUser(null);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    checkAuth();
   }, []);
 
+  // =========================
+  // SIGNUP
+  // =========================
 
-  // const updateUserProfile = async (data) => {
-  //   const res = await updateProfile(data);
+  const signup = async (data) => {
+    try {
+      const res = await signupUser(data);
 
-  //   setUser(res.data.user);
+      console.log("Signup response:", res.data);
 
-  //   localStorage.setItem(
-  //     "user",
-  //     JSON.stringify(res.data.user)
-  //   );
+      setUser(res.data.user);
 
-  //   return res;
-  // };
+      return res;
+    } catch (error) {
+      throw error;
+    }
+  };
+
+  // =========================
+  // SIGNIN
+  // =========================
+
+  const signin = async (data) => {
+    try {
+      const res = await signinUser(data);
+
+      console.log("Signin response:", res.data);
+
+      setUser(res.data.user);
+
+      return res;
+    } catch (error) {
+      console.error("Signin error:", error);
+
+      throw error;
+    }
+  };
+
+  // =========================
+  // SIGNOUT
+  // =========================
+
+  const signout = async () => {
+    try {
+      await signoutUser();
+
+      setUser(null);
+    } catch (error) {
+      console.error("Signout error:", error);
+
+      throw error;
+    }
+  };
+
+  // =========================
+  // UPDATE PROFILE
+  // =========================
 
   const updateUserProfile = async (formData) => {
     try {
@@ -48,87 +110,33 @@ const AuthProvider = ({ children }) => {
 
       setUser(res.data.user);
 
-      localStorage.setItem(
-        "user",
-        JSON.stringify(res.data.user)
-      );
-
       return res;
+    } catch (error) {
+      console.error("Update profile error:", error);
+
+      throw error;
     } finally {
       setUpdating(false);
     }
   };
 
-
-  // Signup
-  const signup = async (data) => {
-
-    const res = await signupUser(data);
-
-    return res;
-  };
-
-  // Signin
-const signin = async (data) => {
-  const res = await signinUser(data);
-
-  console.log("Signin response:", res.data);
-
-  const { token, user } = res.data;
-
-  // Save JWT token
-  localStorage.setItem("token", token);
-
-  // Save user
-  setUser(user);
-
-  localStorage.setItem(
-    "user",
-    JSON.stringify(user)
-  );
-
-  return res;
-};
-
-
-
-
-
-
-  // Logout
-  const signout = async () => {
-
-    await signoutUser();
-    setUser(null);
-    localStorage.removeItem("user");
-  };
-
-
-
-
   return (
-
     <AuthContext.Provider
       value={{
         user,
         signup,
         signin,
-        loading,
         signout,
+        loading,
         updating,
-        updateUserProfile
-
+        updateUserProfile,
       }}
     >
-
       {children}
-
     </AuthContext.Provider>
-
   );
-
 };
 
 export default AuthProvider;
 
-export const useAuth = () => useContext(AuthContext)
+export const useAuth = () => useContext(AuthContext);
