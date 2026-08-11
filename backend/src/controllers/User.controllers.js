@@ -117,7 +117,7 @@ export const signin = async (req, res) => {
     res.cookie("access_token", token, {
       httpOnly: true,
       secure: isProduction,
-     sameSite: isProduction ? "lax" : "none",
+    sameSite: isProduction ? "none" : "lax",
       path: "/",
       maxAge: 24 * 60 * 60 * 1000,
     });
@@ -149,7 +149,7 @@ export const signout = (req, res) => {
     res.clearCookie("access_token", {
       httpOnly: true,
       secure: isProduction,
-      sameSite: isProduction ? "none" : "lax",
+     sameSite: isProduction ? "none" : "lax",
       path: "/",
     });
 
