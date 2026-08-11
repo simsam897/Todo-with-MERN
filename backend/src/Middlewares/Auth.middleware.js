@@ -19,7 +19,7 @@ export const verifyToken = (req, res, next) => {
     console.log("JWT ERROR:", error.message);
 
     return res.status(401).json({
-      message: "Unauthorized - invalid or expired token",
+      message: error.message,
     });
   }
 };
