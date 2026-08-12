@@ -43,13 +43,10 @@ export const signup = async (req, res) => {
       },
     );
 
-    // Production / Development cookie configuration
-    const isProduction = process.env.NODE_ENV === "production";
-
     res.cookie("access_token", token, {
       httpOnly: true,
-      secure: isProduction,
-      sameSite: isProduction ? "none" : "lax",
+      secure: true,
+      sameSite: "none",
       path: "/",
       maxAge: 24 * 60 * 60 * 1000,
     });
@@ -111,15 +108,12 @@ export const signin = async (req, res) => {
       },
     );
 
-    const isProduction = process.env.NODE_ENV === "production";
-
     // Create authentication cookie
-    res.cookie("access_token", token, {
+    res.clearCookie("access_token", {
       httpOnly: true,
-      secure: isProduction,
-    sameSite: isProduction ? "none" : "lax",
+      secure: true,
+      sameSite: "none",
       path: "/",
-      maxAge: 24 * 60 * 60 * 1000,
     });
 
     return res.status(200).json({
@@ -144,12 +138,10 @@ export const signin = async (req, res) => {
 
 export const signout = (req, res) => {
   try {
-    const isProduction = process.env.NODE_ENV === "production";
-
     res.clearCookie("access_token", {
       httpOnly: true,
-      secure: isProduction,
-     sameSite: isProduction ? "none" : "lax",
+      secure: true,
+      sameSite: "none",
       path: "/",
     });
 
