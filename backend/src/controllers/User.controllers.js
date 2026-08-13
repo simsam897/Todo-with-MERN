@@ -43,10 +43,12 @@ export const signup = async (req, res) => {
       },
     );
 
+    const isProduction = process.env.NODE_ENV === "production";
+
     res.cookie("access_token", token, {
       httpOnly: true,
-      secure: true,
-      sameSite: "none",
+      secure: isProduction,
+      sameSite: isProduction ? "none" : "lax",
       path: "/",
       maxAge: 24 * 60 * 60 * 1000,
     });
@@ -109,13 +111,15 @@ export const signin = async (req, res) => {
     );
 
     // Create authentication cookie
-    res.clearCookie("access_token", {
-      httpOnly: true,
-      secure: true,
-      sameSite: "none",
-      path: "/",
-    });
+    const isProduction = process.env.NODE_ENV === "production";
 
+    res.cookie("access_token", token, {
+      httpOnly: true,
+      secure: isProduction,
+      sameSite: isProduction ? "none" : "lax",
+      path: "/",
+      maxAge: 24 * 60 * 60 * 1000,
+    });
     return res.status(200).json({
       message: "Signin successful",
       user: {
